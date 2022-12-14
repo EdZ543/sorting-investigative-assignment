@@ -10,7 +10,7 @@ class EddieSort {
     private static final String FILE_NAME = "5.txt";
     private static Scanner fileScan;
     
-    public static void shuffle(int[] arr) {
+    private static void shuffle(int[] arr) {
         Random rand = new Random();
 
         for (int i = 0; i < arr.length; i++) {
@@ -20,8 +20,15 @@ class EddieSort {
             arr[i] = temp;
         }
     }
+    
+    private static int[] cloneArr(int[] oldArr) {
+        int[] arr = new int[oldArr.length];
+        for (int i = 0; i < arr.length; i++) arr[i] = oldArr[i];
+        return arr;
+    }
 
-    public static int[] sort(int[] arr) {
+    private static int[] sort(int[] oldArr) {
+        int[] arr = cloneArr(oldArr);
         while (true) {
             shuffle(arr);
             if (Checker.checkResults(arr, false)) break;
