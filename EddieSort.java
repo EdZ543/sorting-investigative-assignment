@@ -58,6 +58,6 @@ class EddieSort {
         timer.endTimer();
         
         Checker.checkResults(arr, true);
-        System.out.println(timer.getTimeString());
+        System.out.println("Took " + timer.getTimeString() + " to sort " + arr.length + " values");
     }
 }
