@@ -118,6 +118,9 @@ class EddieSort {
 
     /**
      * Mr. Cohen's bubble sort implementation
+     * 
+     * @param oldNum The array to be sorted
+     * @return The sorted array
      */
     private static int[] bubbleSort(int[] oldNum) {
         int[] num = cloneArr(oldNum);
@@ -136,6 +139,37 @@ class EddieSort {
         }
 
         return num;
+    }
+    
+    /**
+     * Mr. Cohen's bubble sort implementation, but for operation counting
+     * 
+     * @param oldNum The array to be sorted
+     * @return The number of operations
+     */
+    private static long bubbleSortOpCount(int[] oldNum) {
+        int[] num = cloneArr(oldNum);
+        long operations = 0;
+        
+        boolean done = false;
+        operations += 2;
+        for (int i = 0; i < num.length && !done; i++) {
+            operations += 2;
+            done = true;
+            operations += 2;
+            for (int x = 1; x < num.length - i; x++) {
+                operations += 3;
+                if (num[x - 1] > num[x]) {
+                    int temp = num[x - 1];
+                    num[x - 1] = num[x];
+                    num[x] = temp;
+                    done = false;
+                    operations += 4;
+                }
+            }
+        }
+
+        return operations;
     }
 
     public static void main(String[] args) {
