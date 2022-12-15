@@ -7,8 +7,8 @@ import java.util.NoSuchElementException;
 import java.util.ArrayList;
 
 class EddieSort {
-    private static final String FILE_NAME = "5000_source.txt";
     private static Scanner fileScan;
+    private static Scanner scan = new Scanner(System.in);
     private static int operations = 0;
 
     /**
@@ -17,10 +17,10 @@ class EddieSort {
      * @param oldArr The array to be cloned
      * @return A deep copy of oldArr
      */
-    private static int[] cloneArr(int[] oldArr) {
-        int[] arr = new int[oldArr.length];
-        for (int i = 0; i < arr.length; i++) arr[i] = oldArr[i]; // Loop through original array and copy data over
-        return arr;
+    private static int[] cloneArr(int[] arr) {
+        int[] newArr = new int[arr.length];
+        for (int i = 0; i < newArr.length; i++) newArr[i] = arr[i]; // Loop through original array and copy data over
+        return newArr;
     }
 
     /**
@@ -30,9 +30,7 @@ class EddieSort {
      * @param oldArr The array to be sorted
      * @return The sorted version of oldArr
      */
-    private static int[] eddieSort(int[] oldArr) {
-        int[] arr = cloneArr(oldArr);
-
+    private static int[] eddieSort(int[] arr) {
         // Base case
         if (arr.length == 1) return arr;
 
@@ -68,9 +66,7 @@ class EddieSort {
      * @param oldArr The array to be sorted
      * @return The number of "operations"
      */
-    private static int[] eddieSortOpCount(int[] oldArr) {
-        int[] arr = cloneArr(oldArr);
-
+    private static int[] eddieSortOpCount(int[] arr) {
         // Base case
         operations++;
         if (arr.length == 1) return arr;
@@ -122,9 +118,7 @@ class EddieSort {
      * @param oldNum The array to be sorted
      * @return The sorted array
      */
-    private static int[] bubbleSort(int[] oldNum) {
-        int[] num = cloneArr(oldNum);
-        
+    private static int[] bubbleSort(int[] num) {
         boolean done = false;
         for (int i = 0; i < num.length && !done; i++) {
             done = true;
@@ -147,10 +141,8 @@ class EddieSort {
      * @param oldNum The array to be sorted
      * @return The number of operations
      */
-    private static long bubbleSortOpCount(int[] oldNum) {
-        int[] num = cloneArr(oldNum);
+    private static long bubbleSortOpCount(int[] num) {
         long operations = 0;
-        
         boolean done = false;
         operations += 2;
         for (int i = 0; i < num.length && !done; i++) {
@@ -171,12 +163,55 @@ class EddieSort {
 
         return operations;
     }
+    
+    /**
+     * Clones array and sorts array based on a string choice
+     * 
+     * @param arr The array to be sorted
+     * @param sortChoice The sorting algorithm to use
+     * @return The sorted array
+     */
+    private static int[] sort(int[] arr, String sortChoice) {
+        int[] newArr = cloneArr(arr);
+        
+        if (sortChoice.equals("eddie sort")) return eddieSort(newArr);
+        else if (sortChoice.equals("bubble sort")) return bubbleSort(newArr);
+        else return arr;
+    }
+    
+    /**
+     * Clones array, sorts array based on a string choice, and returns the number of operations
+     * 
+     * @param arr The array to be sorted
+     * @param sortChoice The sorting algorithm to use
+     * @return The sorted array
+     */
+    private static long opCount(int[] arr, String sortChoice) {
+        int[] newArr = cloneArr(arr);
+        
+        if (sortChoice.equals("eddie sort")) {
+            operations = 0;
+            eddieSortOpCount(newArr);
+            return operations;
+        } else if (sortChoice.equals("bubble sort")) return bubbleSortOpCount(newArr);
+        else return 0;
+    }
 
     public static void main(String[] args) {
+        // Text interface
+        System.out.print("What is the name of the text file you would like to read from? (include extension) ");
+        String fileName = scan.nextLine();
+        System.out.print("Which sort would you like to use? (eddie sort/bubble sort) ");
+        String sortChoice = scan.nextLine();
+        System.out.print("Would you like to check time? (y/n) ");
+        String checkTime = scan.nextLine();
+        System.out.print("Would you like to check operations? (y/n) ");
+        String checkOps = scan.nextLine();
+        
         // Initialize file scanner
         ArrayList<Integer> arrList = new ArrayList<Integer>();
         try {
-            fileScan = new Scanner(new File(FILE_NAME));
+            fileScan = new Scanner(new File(fileName));
         } catch (FileNotFoundException e) {
             System.out.println("Error - File not found.");
             System.exit(1);
@@ -199,14 +234,17 @@ class EddieSort {
         for (int i = 0; i < arrList.size(); i++) arr[i] = arrList.get(i);
 
         Timer timer = new Timer();
-
-        // Sort the array with eddieSort and time it
-        timer.startTimer();
-        arr = eddieSort(arr);
-        timer.endTimer();
-
+        if (checkTime.equals("y")) timer.startTimer();
+        int[] sortedArr = sort(arr, sortChoice);
+        if (checkTime.equals("y")) timer.endTimer();
+    
         // Display results
-        Checker.checkResults(arr, true);
-        System.out.println("Took " + timer.getTimeString() + " to sort " + arr.length + " values");
+        Checker.checkResults(sortedArr, true);
+        if (checkTime.equals("y")) System.out.println("Time: " + timer.getTimeString());
+        
+        if (checkOps.equals("y")) {
+            long ops = opCount(arr, sortChoice);
+            System.out.println("Operations: " + ops);
+        }
     }
 }
