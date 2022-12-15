@@ -165,6 +165,61 @@ class EddieSort {
     }
     
     /**
+     * GeeksForGeek's insertion sort implementation
+     * 
+     * @param arr The array to sort
+     * @return The sorted array
+     */
+    private static int[] insertionSort(int[] arr) {
+        int n = arr.length;
+        for (int i = 1; i < n; ++i) {
+            int key = arr[i];
+            int j = i - 1;
+ 
+            /* Move elements of arr[0..i-1], that are
+               greater than key, to one position ahead
+               of their current position */
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+            arr[j + 1] = key;
+        }
+        return arr;
+    }
+    
+    /**
+     * GeeksForGeek's insertion sort implementation, but for operation counting
+     * 
+     * @param arr The array to sort
+     * @return TThe number of operations
+     */
+    private static long insertionSortOpCount(int[] arr) {
+        long operations = 0;
+        int n = arr.length;
+        operations += 2;
+        for (int i = 1; i < n; ++i) {
+            operations += 2;
+            int key = arr[i];
+            int j = i - 1;
+            operations += 2;
+ 
+            /* Move elements of arr[0..i-1], that are
+               greater than key, to one position ahead
+               of their current position */
+            while (j >= 0 && arr[j] > key) {
+                operations += 2;
+                arr[j + 1] = arr[j];
+                j = j - 1;
+                operations += 2;
+            }
+            arr[j + 1] = key;
+            operations++;
+        }
+        return operations;
+    }
+    
+    /**
      * Clones array and sorts array based on a string choice
      * 
      * @param arr The array to be sorted
@@ -176,6 +231,7 @@ class EddieSort {
         
         if (sortChoice.equals("eddie sort")) return eddieSort(newArr);
         else if (sortChoice.equals("bubble sort")) return bubbleSort(newArr);
+        else if (sortChoice.equals("insertion sort")) return insertionSort(newArr);
         else return arr;
     }
     
@@ -194,6 +250,7 @@ class EddieSort {
             eddieSortOpCount(newArr);
             return operations;
         } else if (sortChoice.equals("bubble sort")) return bubbleSortOpCount(newArr);
+        else if (sortChoice.equals("insertion sort")) return insertionSortOpCount(newArr);
         else return 0;
     }
 
@@ -201,7 +258,7 @@ class EddieSort {
         // Text interface
         System.out.print("What is the name of the text file you would like to read from? (include extension) ");
         String fileName = scan.nextLine();
-        System.out.print("Which sort would you like to use? (eddie sort/bubble sort) ");
+        System.out.print("Which sort would you like to use? (eddie sort/bubble sort/insertion sort) ");
         String sortChoice = scan.nextLine();
         System.out.print("Would you like to check time? (y/n) ");
         String checkTime = scan.nextLine();
