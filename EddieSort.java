@@ -9,7 +9,8 @@ import java.util.ArrayList;
 class EddieSort {
     private static final String FILE_NAME = "5000_source.txt";
     private static Scanner fileScan;
-    
+    private static int operations = 0;
+
     /**
      * Creates a deep copy of an integer array
      * 
@@ -31,21 +32,21 @@ class EddieSort {
      */
     private static int[] eddieSort(int[] oldArr) {
         int[] arr = cloneArr(oldArr);
-        
+
         // Base case
         if (arr.length == 1) return arr;
-        
+
         // Create copies of left and right half of array
         int m = arr.length / 2;
         int[] leftArr = new int[m];
         for (int i = 0; i < leftArr.length; i++) leftArr[i] = arr[i];
         int[] rightArr = new int[arr.length - m];
         for (int i = 0; i < rightArr.length; i++) rightArr[i] = arr[m + i];
-        
+
         // Sort left and right halves recursively
         leftArr = eddieSort(leftArr);
         rightArr = eddieSort(rightArr);
-        
+
         // Combine left and right halves
         int l = 0, r = 0;
         for (int i = 0; i < arr.length; i++) {
@@ -57,8 +58,84 @@ class EddieSort {
                 r++;
             }
         }
-        
+
         return arr;
+    }
+
+    /**
+     * My sorting method, but it returns the number of operations
+     * 
+     * @param oldArr The array to be sorted
+     * @return The number of "operations"
+     */
+    private static int[] eddieSortOpCount(int[] oldArr) {
+        int[] arr = cloneArr(oldArr);
+
+        // Base case
+        operations++;
+        if (arr.length == 1) return arr;
+
+        // Create copies of left and right half of array
+        int m = arr.length / 2;
+        int[] leftArr = new int[m];
+        operations += 3;
+        for (int i = 0; i < leftArr.length; i++) {
+            operations += 2;
+            leftArr[i] = arr[i];
+            operations++;
+        }
+        int[] rightArr = new int[arr.length - m];
+        operations += 2;
+        for (int i = 0; i < rightArr.length; i++) {
+            operations += 2;
+            rightArr[i] = arr[m + i];
+            operations++;
+        }
+
+        // Sort left and right halves recursively
+        leftArr = eddieSort(leftArr);
+        rightArr = eddieSort(rightArr);
+        operations += 2;
+
+        // Combine left and right halves
+        int l = 0, r = 0;
+        operations += 3;
+        for (int i = 0; i < arr.length; i++) {
+            operations += 2;
+            if (l < leftArr.length && (r == rightArr.length || leftArr[l] < rightArr[r])){
+                arr[i] = rightArr[l];
+                l++;
+                operations += 2;
+            } else if (r < rightArr.length && (l == leftArr.length || rightArr[r] < leftArr[l])){
+                arr[i] = rightArr[r];
+                r++;
+                operations += 2;
+            }
+        }
+
+        return arr;
+    }
+
+    /**
+     * Mr. Cohen's bubble sort implementation
+     */
+    private static int[] bubbleSort(int[] oldNum) {
+        int[] num = cloneArr(oldNum);
+        
+        boolean done = false;
+        for (int i = 0; i < num.length && !done; i++) {
+            done = true;
+            for (int x = 1; x < num.length - i; x++) {
+                if (num[x - 1] > num[x]) {
+                    int temp = num[x - 1];
+                    num[x - 1] = num[x];
+                    num[x] = temp;
+                    done = false;
+                }
+            }
+        }
+
+        return num;
     }
 
     public static void main(String[] args) {
@@ -70,7 +147,7 @@ class EddieSort {
             System.out.println("Error - File not found.");
             System.exit(1);
         }
-        
+
         // Get arraylist of all lines in the text file
         boolean moreLines = true;
         while (moreLines) {
@@ -82,18 +159,18 @@ class EddieSort {
             } 
         }
         fileScan.close();
-        
+
         // Transfer integers to a regular array
         int[] arr = new int[arrList.size()];
         for (int i = 0; i < arrList.size(); i++) arr[i] = arrList.get(i);
-        
+
         Timer timer = new Timer();
-        
+
         // Sort the array with eddieSort and time it
         timer.startTimer();
         arr = eddieSort(arr);
         timer.endTimer();
-        
+
         // Display results
         Checker.checkResults(arr, true);
         System.out.println("Took " + timer.getTimeString() + " to sort " + arr.length + " values");
